@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablero de Control Operativo - Starbucks</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* Header Moderno */
+        .header {
+            background: linear-gradient(135deg, #00704A 0%, #1e8e5e 100%);
+            color: white;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 50%;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 40px 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .header-text h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .header-text p {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            background: rgba(255,255,255,0.15);
+            padding: 10px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .breadcrumb-item {
+            cursor: pointer;
+            transition: all 0.2s;
+            opacity: 0.8;
+        }
+
+        .breadcrumb-item:hover {
+            opacity: 1;
+            transform: translateY(-1px);
+        }
+
+        .breadcrumb-item.active {
+            opacity: 1;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        /* Grid de áreas clave mejorado */
+        .areas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: -60px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .area-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,112,74,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .area-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00704A, #1e8e5e);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .area-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .area-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 60px rgba(0,112,74,0.2);
+        }
+
+        .area-icon {
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, #00704A, #1e8e5e);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0,112,74,0.25);
+            transition: all 0.4s;
+        }
+
+        .area-card:hover .area-icon {
+            transform: rotate(5deg) scale(1.1);
+            box-shadow: 0 12px 30px rgba(0,112,74,0.35);
+        }
+
+        .area-card h3 {
+            color: #00704A;
+            font-size: 22px;
+            margin-bottom: 12px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .area-card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Indicadores mejorados */
+        .indicators-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 25px;
+        }
+
+        .indicator-card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border-left: 6px solid #ddd;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .indicator-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(0,112,74,0.03) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(40%, -40%);
+        }
+
+        .indicator-card:hover {
+            transform: translateX(8px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .indicator-card.green { 
+            border-left-color: #28a745;
+            background: linear-gradient(to right, rgba(40,167,69,0.02) 0%, white 100%);
+        }
+        .indicator-card.yellow { 
+            border-left-color: #ffc107;
+            background: linear-gradient(to right, rgba(255,193,7,0.02) 0%, white 100%);
+        }
+        .indicator-card.red { 
+            border-left-color: #dc3545;
+            background: linear-gradient(to right, rgba(220,53,69,0.02) 0%, white 100%);
+        }
+
+        .indicator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .indicator-title {
+            flex: 1;
+            padding-right: 15px;
+        }
+
+        .indicator-title h4 {
+            color: #00704A;
+            font-size: 19px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .indicator-title p {
+            color: #888;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .indicator-value {
+            text-align: right;
+            min-width: 100px;
+        }
+
+        .indicator-value .value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #00704A;
+            line-height: 1;
+        }
+
+        .indicator-value .meta {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.green {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+        }
+
+        .status-badge.yellow {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            color: #856404;
+        }
+
+        .status-badge.red {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+        }
+
+        /* Apertura mejorada */
+        .apertura-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+        }
+
+        .apertura-header {
+            border-bottom: 3px solid #00704A;
+            padding-bottom: 25px;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .apertura-header::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 120px;
+            height: 3px;
+            background: linear-gradient(90deg, #1e8e5e, transparent);
+        }
+
+        .apertura-header h3 {
+            color: #00704A;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .apertura-header .description {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        .reference-table {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .reference-item {
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .reference-item:hover {
+            transform: translateY(-3px);
+            border-color: currentColor;
+        }
+
+        .reference-item .label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .reference-item .value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #00704A;
+        }
+
+        .subindicators-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 30px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .subindicators-table thead {
+            background: linear-gradient(135deg, #00704A, #1e8e5e);
+            color: white;
+        }
+
+        .subindicators-table th {
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .subindicators-table th:last-child {
+            text-align: center;
+        }
+
+        .subindicators-table tbody tr {
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.2s;
+        }
+
+        .subindicators-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .subindicators-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .subindicators-table td {
+            padding: 18px 20px;
+            font-size: 14px;
+        }
+
+        .subindicator-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .subindicator-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #00704A;
+        }
+
+        .subindicator-meta {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .subindicator-status {
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .chart-container {
+            margin: 30px 0;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        .chart-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+            align-items: start;
+        }
+
+        .table-column {
+            min-width: 0;
+        }
+
+        .chart-column {
+            min-width: 0;
+            position: sticky;
+            top: 20px;
+        }
+
+        .back-button {
+            background: linear-gradient(135deg, #00704A, #1e8e5e);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,112,74,0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .back-button:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 6px 20px rgba(0,112,74,0.4);
+        }
+
+        .section-title {
+            color: #00704A;
+            margin: 35px 0 20px;
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(180deg, #00704A, #1e8e5e);
+            border-radius: 2px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+            @media (max-width: 768px) {
+            .header-content {
+                padding: 30px 20px 20px;
+            }
+
+            .header-top {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .areas-grid {
+                grid-template-columns: 1fr;
+                margin-top: -40px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .indicators-container {
+                grid-template-columns: 1fr;
+            }
+
+            .subindicators-table {
+                font-size: 12px;
+            }
+
+            .subindicators-table th,
+            .subindicators-table td {
+                padding: 12px 10px;
+            }
+
+            .indicator-value .value {
+                font-size: 28px;
+            }
+
+            .apertura-container {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="header-top">
+                <div class="logo-section">
+                    <div class="logo">☕</div>
+                    <div class="header-text">
+                        <h1>Tablero de Control Operativo</h1>
+                        <p>Monitoreo en tiempo real del desempeño operacional</p>
+                    </div>
+                </div>
+                <div class="breadcrumb" id="breadcrumb"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Vista: Áreas Clave -->
+        <div id="view-areas">
+            <div class="areas-grid" id="areasGrid"></div>
+        </div>
+
+        <!-- Vista: Indicadores -->
+        <div id="view-indicators" class="hidden">
+            <button class="back-button" onclick="navigateTo('areas')">← Volver</button>
+            <div class="indicators-container" id="indicatorsContainer"></div>
+        </div>
+
+        <!-- Vista: Apertura -->
+        <div id="view-apertura" class="hidden">
+            <button class="back-button" onclick="navigateBack()">← Volver</button>
+            <div class="apertura-container" id="aperturaContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        const data = {
+            areas: [
+                {
+                    id: 'atencion',
+                    title: 'Atención al cliente y experiencia en tienda',
+                    icon: '👥',
+                    description: 'Monitoreo de la calidad de servicio, tiempos de atención y satisfacción del cliente',
+                    indicators: [
+                        {
+                            id: 'tiempo_atencion',
+                            name: 'Tiempo promedio de atención',
+                            description: 'Tiempo entre el pedido y la entrega',
+                            value: '5.2',
+                            unit: ' min',
+                            meta: '≤ 4 min',
+                            status: 'red',
+                            chartImage: 'grafico_tiempo_atencion.png',
+                            subindicators: [
+                                { name: 'Espera en cola', value: '2.3', unit: ' min', meta: '≤ 2', status: '🟡' },
+                                { name: 'Toma de pedido', value: '0.8', unit: ' min', meta: '≤ 1', status: '🟢' },
+                                { name: 'Preparación', value: '1.6', unit: ' min', meta: '≤ 2', status: '🟢' },
+                                { name: 'Entrega', value: '0.5', unit: ' min', meta: '≤ 0.5', status: '🟢' },
+                                { name: 'Total', value: '5.2', unit: ' min', meta: '-', status: '🔴' }
+                            ],
+                            reference: { verde: '≤ 4', amarillo: '4.1–5', rojo: '> 5' }
+                        },
+                        {
+                            id: 'satisfaccion',
+                            name: 'Nivel de satisfacción del cliente',
+                            description: '% de respuestas positivas en encuestas',
+                            value: '89',
+                            unit: '%',
+                            meta: '≥ 90%',
+                            status: 'yellow',
+                            chartImage: 'grafico_satisfaccion_cliente.png',
+                            subindicators: [
+                                { name: 'Amabilidad', value: '91', unit: '%', meta: '≥ 90', status: '🟢' },
+                                { name: 'Rapidez', value: '85', unit: '%', meta: '≥ 90', status: '🟡' },
+                                { name: 'Limpieza', value: '88', unit: '%', meta: '≥ 90', status: '🟡' },
+                                { name: 'Presentación', value: '93', unit: '%', meta: '≥ 90', status: '🟢' },
+                                { name: 'Total', value: '89', unit: '%', meta: '-', status: '🟡' }
+                            ],
+                            reference: { verde: '≥ 90', amarillo: '80–89', rojo: '< 80' }
+                        },
+                        {
+                            id: 'reclamos',
+                            name: 'Reclamos por cada 100 ventas',
+                            description: 'Quejas registradas por cada 100 transacciones',
+                            value: '6',
+                            unit: '',
+                            meta: '≤ 2',
+                            status: 'red',
+                            chartImage: 'grafico_reclamos.png',
+                            subindicators: [
+                                { name: 'Demoras', value: '2', unit: '', meta: '≤ 2', status: '🟢' },
+                                { name: 'Errores de pedido', value: '3', unit: '', meta: '≤ 2', status: '🔴' },
+                                { name: 'Mal servicio', value: '1', unit: '', meta: '≤ 2', status: '🟢' },
+                                { name: 'Total', value: '6', unit: '', meta: '-', status: '🔴' }
+                            ],
+                            reference: { verde: '≤ 2', amarillo: '3–4', rojo: '> 4' }
+                        }
+                    ]
+                },
+                {
+                    id: 'calidad',
+                    title: 'Calidad y consistencia del producto',
+                    icon: '☕',
+                    description: 'Control de la calidad de productos, reducción de desperdicios y cumplimiento de estándares',
+                    indicators: [
+                        {
+                            id: 'pedidos_correctos',
+                            name: 'Pedidos correctos',
+                            description: '% de pedidos entregados sin error',
+                            value: '96',
+                            unit: '%',
+                            meta: '≥ 98%',
+                            status: 'yellow',
+                            chartImage: 'grafico_pedidos_correctos.png',
+                            subindicators: [
+                                { name: 'Bebidas calientes', value: '99', unit: '%', meta: '98', status: '🟢' },
+                                { name: 'Bebidas frías', value: '96', unit: '%', meta: '98', status: '🟡' },
+                                { name: 'Pedidos personalizados', value: '93', unit: '%', meta: '98', status: '🔴' },
+                                { name: 'Total', value: '96', unit: '%', meta: '-', status: '🟡' }
+                            ],
+                            reference: { verde: '≥ 98', amarillo: '95–97', rojo: '< 95' }
+                        },
+                        {
+                            id: 'desperdicio',
+                            name: 'Desperdicio de producto',
+                            description: '% de insumos descartados',
+                            value: '4',
+                            unit: '%',
+                            meta: '≤ 3%',
+                            status: 'yellow',
+                            chartImage: 'grafico_desperdicio.png',
+                            subindicators: [
+                                { name: 'Café', value: '2', unit: '%', meta: '≤ 3', status: '🟢' },
+                                { name: 'Leche', value: '4', unit: '%', meta: '≤ 3', status: '🟡' },
+                                { name: 'Pastelería', value: '6', unit: '%', meta: '≤ 3', status: '🔴' },
+                                { name: 'Total', value: '4', unit: '%', meta: '-', status: '🟡' }
+                            ],
+                            reference: { verde: '≤ 3', amarillo: '3.1–5', rojo: '> 5' }
+                        },
+                        {
+                            id: 'estandares',
+                            name: 'Cumplimiento de estándares',
+                            description: '% de auditorías aprobadas',
+                            value: '92',
+                            unit: '%',
+                            meta: '≥ 95%',
+                            status: 'yellow',
+                            chartImage: 'grafico_cumplimiento_estandares.png',
+                            subindicators: [
+                                { name: 'Temperatura adecuada', value: '98', unit: '%', meta: '≥ 95', status: '🟢' },
+                                { name: 'Proporciones correctas', value: '90', unit: '%', meta: '≥ 95', status: '🟡' },
+                                { name: 'Limpieza de máquinas', value: '87', unit: '%', meta: '≥ 95', status: '🔴' },
+                                { name: 'Total', value: '92', unit: '%', meta: '-', status: '🟡' }
+                            ],
+                            reference: { verde: '≥ 95', amarillo: '85–94', rojo: '< 85' }
+                        }
+                    ]
+                },
+                {
+                    id: 'logistica',
+                    title: 'Logística y abastecimiento',
+                    icon: '📦',
+                    description: 'Gestión de inventarios, tiempos de reposición y optimización de costos logísticos',
+                    indicators: [
+                        {
+                            id: 'stock',
+                            name: 'Nivel de stock óptimo',
+                            description: '% de días sin quiebre',
+                            value: '92',
+                            unit: '%',
+                            meta: '≥ 95%',
+                            status: 'yellow',
+                            chartImage: 'grafico_stock_optimo.png',
+                            subindicators: [
+                                { name: 'Café', value: '98', unit: '%', meta: '95', status: '🟢' },
+                                { name: 'Leche', value: '92', unit: '%', meta: '95', status: '🟡' },
+                                { name: 'Insumos varios', value: '87', unit: '%', meta: '95', status: '🔴' },
+                                { name: 'Promedio', value: '92', unit: '%', meta: '-', status: '🟡' }
+                            ],
+                            reference: { verde: '≥ 95', amarillo: '85–94', rojo: '< 85' }
+                        },
+                        {
+                            id: 'reposicion',
+                            name: 'Tiempo de reposición',
+                            description: 'Días entre pedido y entrega',
+                            value: '2.5',
+                            unit: ' días',
+                            meta: '≤ 2',
+                            status: 'yellow',
+                            chartImage: 'grafico_tiempo_reposicion.png',
+                            subindicators: [
+                                { name: 'Café en grano', value: '1.8', unit: ' días', meta: '≤ 2', status: '🟢' },
+                                { name: 'Lácteos', value: '2.5', unit: ' días', meta: '≤ 2', status: '🟡' },
+                                { name: 'Panadería', value: '3.2', unit: ' días', meta: '≤ 2', status: '🔴' },
+                                { name: 'Total', value: '2.5', unit: ' días', meta: '-', status: '🟡' }
+                            ],
+                            reference: { verde: '≤ 2', amarillo: '3–4', rojo: '> 4' }
+                        },
+                        {
+                            id: 'costo_logistico',
+                            name: 'Costo logístico por tienda',
+                            description: 'Costo logístico / ventas',
+                            value: '7.5',
+                            unit: '%',
+                            meta: '≤ 5%',
+                            status: 'red',
+                            chartImage: 'grafico_costo_logistico.png',
+                            subindicators: [
+                                { name: 'Transporte', value: '3.2', unit: '%', meta: '≤ 3', status: '🟡' },
+                                { name: 'Almacenamiento', value: '2.5', unit: '%', meta: '≤ 3', status: '🟢' },
+                                { name: 'Pérdidas por vencimiento', value: '1.8', unit: '%', meta: '≤ 1', status: '🔴' },
+                                { name: 'Total', value: '7.5', unit: '%', meta: '-', status: '🔴' }
+                            ],
+                            reference: { verde: '≤ 5', amarillo: '5.1–7', rojo: '> 7' }
+                        }
+                    ]
+                },
+                {
+                    id: 'personal',
+                    title: 'Gestión del personal',
+                    icon: '👨‍💼',
+                    description: 'Seguimiento de rotación, capacitación y clima laboral del equipo',
+                    indicators: [
+                        {
+                            id: 'rotacion',
+                            name: 'Rotación de empleados',
+                            description: '% que dejan la empresa',
+                            value: '13',
+                            unit: '%',
+                            meta: '≤ 10%',
+                            status: 'yellow',
+                            chartImage: 'grafico_rotacion_empleados.png',
+                            subindicators: [
+                                { name: 'Renuncias voluntarias', value: '8', unit: '%', meta: '≤ 10', status: '🟢' },
+                                { name: 'Desvinculaciones', value: '3', unit: '%', meta: '≤ 2', status: '🟡' },
+                                { name: 'Traslados internos', value: '2', unit: '%', meta: '≤ 3', status: '🟢' },
+                                { name: 'Total', value: '13', unit: '%', meta: '-', status: '🟡' }
+                            ],
+                            reference: { verde: '≤ 10', amarillo: '11–15', rojo: '> 15' }
+                        },
+                        {
+                            id: 'capacitacion',
+                            name: 'Horas de capacitación por empleado',
+                            description: 'Horas mensuales de formación',
+                            value: '3.3',
+                            unit: ' h',
+                            meta: '≥ 4h',
+                            status: 'yellow',
+                            chartImage: 'grafico_capacitacion.png',
+                            subindicators: [
+                                { name: 'Servicio y atención', value: '3', unit: ' h', meta: '≥ 4', status: '🟡' },
+                                { name: 'Productos y café', value: '5', unit: ' h', meta: '≥ 4', status: '🟢' },
+                                { name: 'Liderazgo y gestión', value: '2', unit: ' h', meta: '≥ 4', status: '🔴' },
+                                { name: 'Promedio', value: '3.3', unit: ' h', meta: '-', status: '🟡' }
+                            ],
+                            reference: { verde: '≥ 4', amarillo: '2–3', rojo: '< 2' }
+                        },
+                        {
+                            id: 'clima',
+                            name: 'Clima laboral',
+                            description: '% de satisfacción interna',
+                            value: '84',
+                            unit: '%',
+                            meta: '≥ 85%',
+                            status: 'yellow',
+                            chartImage: 'grafico_clima_laboral.png',
+                            subindicators: [
+                                { name: 'Comunicación', value: '84', unit: '%', meta: '≥ 85', status: '🟡' },
+                                { name: 'Reconocimiento', value: '80', unit: '%', meta: '≥ 85', status: '🟡' },
+                                { name: 'Condiciones de trabajo', value: '88', unit: '%', meta: '≥ 85', status: '🟢' },
+                                { name: 'Promedio', value: '84', unit: '%', meta: '-', status: '🟡' }
+                            ],
+                            reference: { verde: '≥ 85', amarillo: '75–84', rojo: '< 75' }
+                        }
+                    ]
+                },
+                {
+                    id: 'ventas',
+                    title: 'Ventas y rentabilidad operativa',
+                    icon: '💰',
+                    description: 'Análisis de ventas, ticket promedio y márgenes operativos',
+                    indicators: [
+                        {
+                            id: 'ticket',
+                            name: 'Ticket promedio',
+                            description: 'Promedio de gasto por cliente',
+                            value: '7.3',
+                            unit: ' USD',
+                            meta: '≥ 8 USD',
+                            status: 'yellow',
+                            chartImage: 'grafico_ticket_promedio.png',
+                            subindicators: [
+                                { name: 'Bebidas calientes', value: '8.5', unit: ' USD', meta: '≥ 8', status: '🟢' },
+                                { name: 'Bebidas frías', value: '7.1', unit: ' USD', meta: '≥ 8', status: '🟡' },
+                                { name: 'Pastelería y snacks', value: '6.4', unit: ' USD', meta: '≥ 8', status: '🔴' },
+                                { name: 'Promedio', value: '7.3', unit: ' USD', meta: '-', status: '🟡' }
+                            ],
+                            reference: { verde: '≥ 8', amarillo: '6–7.9', rojo: '< 6' }
+                        },
+                        {
+                            id: 'ventas_hora',
+                            name: 'Ventas por hora',
+                            description: 'Ventas totales / horas abiertas',
+                            value: '142',
+                            unit: ' USD/h',
+                            meta: '≥ 150 USD/h',
+                            status: 'yellow',
+                            chartImage: 'grafico_ventas_hora.png',
+                            subindicators: [
+                                { name: 'Mañana', value: '160', unit: ' USD/h', meta: '≥ 150', status: '🟢' },
+                                { name: 'Tarde', value: '145', unit: ' USD/h', meta: '≥ 150', status: '🟡' },
+                                { name: 'Noche', value: '120', unit: ' USD/h', meta: '≥ 150', status: '🔴' },
+                                { name: 'Promedio', value: '142', unit: ' USD/h', meta: '-', status: '🟡' }
+                            ],
+                            reference: { verde: '≥ 150', amarillo: '120–149', rojo: '< 120' }
+                        },
+                        {
+                            id: 'margen',
+                            name: 'Margen operativo',
+                            description: '(Utilidad / ventas) × 100',
+                            value: '20',
+                            unit: '%',
+                            meta: '≥ 20%',
+                            status: 'green',
+                            chartImage: 'grafico_margen_operativo.png',
+                            subindicators: [
+                                { name: 'Costos fijos', value: '10', unit: '%', meta: '≤ 10', status: '🟢' },
+                                { name: 'Costos variables', value: '8', unit: '%', meta: '≤ 7', status: '🟡' },
+                                { name: 'Ventas netas', value: '25', unit: '%', meta: '≥ 20', status: '🟢' },
+                                { name: 'Total', value: '20', unit: '%', meta: '-', status: '🟢' }
+                            ],
+                            reference: { verde: '≥ 20', amarillo: '15–19', rojo: '< 15' }
+                        }
+                    ]
+                }
+            ]
+        };
+
+        let currentArea = null;
+        let currentIndicator = null;
+
+        function init() {
+            renderAreas();
+            updateBreadcrumb([]);
+        }
+
+        function renderAreas() {
+            const grid = document.getElementById('areasGrid');
+            grid.innerHTML = data.areas.map(area => `
+                <div class="area-card" onclick="showIndicators('${area.id}')">
+                    <div class="area-icon">${area.icon}</div>
+                    <h3>${area.title}</h3>
+                    <p>${area.description}</p>
+                </div>
+            `).join('');
+        }
+
+        function showIndicators(areaId) {
+            currentArea = data.areas.find(a => a.id === areaId);
+            const container = document.getElementById('indicatorsContainer');
+            
+            container.innerHTML = currentArea.indicators.map(ind => `
+                <div class="indicator-card ${ind.status}" onclick="showApertura('${ind.id}')">
+                    <div class="indicator-header">
+                        <div class="indicator-title">
+                            <h4>${ind.name}</h4>
+                            <p>${ind.description}</p>
+                        </div>
+                        <div class="indicator-value">
+                            <div class="value">${ind.value}${ind.unit}</div>
+                            <div class="meta">Meta: ${ind.meta}</div>
+                        </div>
+                    </div>
+                    <span class="status-badge ${ind.status}">
+                        ${ind.status === 'green' ? '✓ En objetivo' : ind.status === 'yellow' ? '⚠ Precaución' : '✕ Fuera de meta'}
+                    </span>
+                </div>
+            `).join('');
+
+            updateBreadcrumb([currentArea.title]);
+            navigateTo('indicators');
+        }
+
+        function showApertura(indicatorId) {
+            currentIndicator = currentArea.indicators.find(i => i.id === indicatorId);
+            const container = document.getElementById('aperturaContainer');
+            
+            container.innerHTML = `
+                <div class="apertura-header">
+                    <h3>${currentIndicator.name}</h3>
+                    <p class="description">${currentIndicator.description}</p>
+                    <div class="reference-table">
+                        <div class="reference-item" style="background: #d4edda;">
+                            <div class="label">Verde</div>
+                            <div class="value">${currentIndicator.reference.verde}</div>
+                        </div>
+                        <div class="reference-item" style="background: #fff3cd;">
+                            <div class="label">Amarillo</div>
+                            <div class="value">${currentIndicator.reference.amarillo}</div>
+                        </div>
+                        <div class="reference-item" style="background: #f8d7da;">
+                            <div class="label">Rojo</div>
+                            <div class="value">${currentIndicator.reference.rojo}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <img src="${currentIndicator.chartImage}" alt="${currentIndicator.chart}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;text-align:center;padding:40px;color:#999;&quot;>📊 Gráfico no disponible: ${currentIndicator.chartImage}</div>'">
+                </div>
+
+                <h4 class="section-title">Desglose detallado</h4>
+                <table class="subindicators-table">
+                    <thead>
+                        <tr>
+                            <th>Subindicador</th>
+                            <th>Valor</th>
+                            <th>Meta</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${currentIndicator.subindicators.map(sub => `
+                            <tr>
+                                <td class="subindicator-name">${sub.name}</td>
+                                <td class="subindicator-value">${sub.value}${sub.unit}</td>
+                                <td class="subindicator-meta">Meta: ${sub.meta}</td>
+                                <td class="subindicator-status">${sub.status}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            updateBreadcrumb([currentArea.title, currentIndicator.name]);
+            navigateTo('apertura');
+        }
+
+        function navigateTo(view) {
+            document.getElementById('view-areas').classList.add('hidden');
+            document.getElementById('view-indicators').classList.add('hidden');
+            document.getElementById('view-apertura').classList.add('hidden');
+            document.getElementById('view-' + view).classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function navigateBack() {
+            showIndicators(currentArea.id);
+        }
+
+        function updateBreadcrumb(items) {
+            const breadcrumb = document.getElementById('breadcrumb');
+            
+            if (items.length === 0) {
+                breadcrumb.style.display = 'none';
+                return;
+            }
+            
+            breadcrumb.style.display = 'flex';
+            
+            const fullPath = ['Áreas Clave', ...items];
+            
+            breadcrumb.innerHTML = fullPath.map((item, index) => `
+                <span class="breadcrumb-item ${index === fullPath.length - 1 ? 'active' : ''}"
+                      onclick="${index === 0 ? 'navigateTo(\'areas\')' : index === 1 ? 'navigateBack()' : ''}">
+                    ${item}
+                </span>
+                ${index < fullPath.length - 1 ? '<span>›</span>' : ''}
+            `).join('');
+        }
+
+        init();
+    </script>
+</body>
+</html>
